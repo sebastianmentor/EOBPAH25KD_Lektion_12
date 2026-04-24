@@ -1,7 +1,11 @@
 import pickle
+import joblib
+
 
 with open("my_model.pkl", "rb") as f:
     loaded_model = pickle.load(f)
+
+loaded_model = joblib.load("logReg_model.joblib")
 
 def get_drug(value:float) -> str:
     match value:
@@ -27,7 +31,9 @@ def predict():
         Na_to_k = float(input("Enter na_to_k (0,1,2,3 or 4): "))
 
         pred = loaded_model.predict([[age,sex,bp,chol,Na_to_k]])
-        print(f"Model predicts drug {get_drug(pred)}")
+        confidence = loaded_model.predict_proba([[age,sex,bp,chol,Na_to_k]])
+        print(f"Model predicts drug {get_drug(pred)} with a confidence of ")
+        print(f"Model predicts drug {get_drug(pred)} with a confidence of {confidence.max():.2%}")
     
     except Exception as e:
         print(e)
